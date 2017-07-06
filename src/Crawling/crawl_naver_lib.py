@@ -273,8 +273,6 @@ def refine_raw_html(fn):
 					mode = 0
 			elif mode == 2:
 				if line[i] in ['0','1','2','3','4','5','6','7','8','9']:
-					pass
-				elif line[i] == ';':
 					mode = 0
 				else:
 					# detected
