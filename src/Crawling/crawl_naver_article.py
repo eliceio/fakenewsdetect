@@ -42,18 +42,13 @@ def crawl_article(date, oid, mid, sid1, sid2, aid, title, url):
 		f.close()
 		refine_raw_html(fn)
 
-	print ("====================================================================")
-	print (fn)
-	print ("====================================================================")
 	# Parse the list page and get the list
 	f = open(fn)
 	soup = BeautifulSoup(f, 'html.parser') 
 	f.close()
 	body = soup.find('div', {"id":"articleBodyContents"})
-	print ("1st:" + str(body))
 	if body == None:
 		body = soup.find('div', {"id":"articeBody"})
-		print ("2nd:" +str(body))
 
 	def get_text_from_tag(tag):
 		if type(tag) == bs4.element.Comment:
@@ -88,7 +83,6 @@ def crawl_article(date, oid, mid, sid1, sid2, aid, title, url):
 		article += text
 	article = article.strip()
 
-	print (article)
 	# Save to file
 	fn = get_text_name_article(date, oid, mid, sid1, sid2, aid)
 	f = codecs.open(fn, 'w', 'utf-8-sig')
