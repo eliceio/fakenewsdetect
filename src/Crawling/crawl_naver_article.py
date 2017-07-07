@@ -11,6 +11,7 @@ import bs4
 from crawl_naver_lib import *
 import csv
 
+#test
 # CSV format
 # "date","newspaper","regular/breaking","section","subsection","artical id","title","url"
 
