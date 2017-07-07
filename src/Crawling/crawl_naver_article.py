@@ -18,8 +18,8 @@ def crawl_article(date, oid, mid, sid1, sid2, aid, title, url):
 	base_url = 'http://news.naver.com/main/read.nhn'
 
 	fn = get_raw_html_name_article(date, oid, mid, sid1, sid2, aid)
-	print ("DO: " + fn)
 	if not os.path.exists(fn): # the page has NOT been crawled.
+		print ("Download: " + fn)
 		time.sleep(3)
 		status = -1
 		while status != 200:
