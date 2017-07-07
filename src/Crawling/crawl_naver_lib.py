@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Libraries for crawling naver news
-
+import os
 oid_name = {
 	'032':'경향신문',
 	'005':'국민일보',
