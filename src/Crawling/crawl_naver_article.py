@@ -49,6 +49,17 @@ def crawl_article(date, oid, mid, sid1, sid2, aid, title, url):
 	body = soup.find('div', {"id":"articleBodyContents"})
 	if body == None:
 		body = soup.find('div', {"id":"articeBody"})
+	if body == None:
+		body = soup.find('div', {"id":"newsEndContents", "class":"news_end"})
+	if body == None:
+		print ("======================================")
+		print ("ERROR: UNEXPECTED HTML CODE")
+		print ("ERROR: PLEASE REPORT THE FOLLOWING CODE TO holypsycho@gmail.com")
+		print ('       crawl_article("%s", "%s", "%s", "%s", "%s", "%s", "title", "%s")' % (date, oid, mid, sid1, sid2, aid, url))
+		print ("ERROR: Crawling continues, but you have to run again")
+		print ("ERROR: after the unexpected html code is treated.")
+		print ("======================================")
+		return
 
 	def get_text_from_tag(tag):
 		if type(tag) == bs4.element.Comment:
