@@ -21,9 +21,10 @@ def crawl_list(date, sid1, sid2, mid='shm'):
 
 	while True: # for all pages
 		page += 1
-		time.sleep(10)
 		fn = get_raw_html_name_list(date, sid1, sid2, mid, page)
 		if not os.path.exists(fn): # the page has NOT been crawled.
+			print ("Download: " + fn)
+			time.sleep(3)
 			status = -1
 			while status != 200:
 				if status >= 0:
