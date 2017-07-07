@@ -304,16 +304,22 @@ def get_raw_html_name_list(date, sid1, sid2, mid, page):
 	'''
 	Return the raw html file name of list pages
 	'''
+	if not os.path.exists('raw_html'):
+		os.mkdir('raw_html')
 	return 'raw_html/list.%s.%s.%s.%s.%d.html' % (date, sid1, sid2, mid, page)
 
 def get_raw_html_name_article(date, oid, mid, sid1, sid2, aid):
 	'''
 	Return the raw html file name of article pages
 	'''
+	if not os.path.exists('raw_html'):
+		os.mkdir('raw_html')
 	return 'raw_html/article.%s.%s.%s.%s.%s.%s.html' % (date, oid, mid, sid1, sid2, aid)
 
 def get_text_name_article(date, oid, mid, sid1, sid2, aid):
 	'''
 	Return the raw html file name of article pages
 	'''
+	if not os.path.exists('article'):
+		os.mkdir('article')
 	return 'article/%s.%s.%s.%s.%s.%s.txt' % (date, oid, mid, sid1, sid2, aid)
