@@ -267,6 +267,8 @@ def refine_raw_html(fn):
 	refined = ''
 	detected = False
 	for line in f:
+		if '\0' in line:
+			line = line.replace('\0', '')
 		if not '&#' in line:
 			refined += line
 			continue
