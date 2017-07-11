@@ -1,0 +1,24 @@
+{
+  "manifest_version": 2,
+  "version": "1.0",
+  "name": "FakeNews Detector",
+  "author": "Elice-Project",
+  "description": "Elice Team Project - Fake News Detector",
+  "icons": {"96": "icon.png"},
+  "permissions": ["storage", "*://*.eliceteam.nosyu.pe.kr/*"],
+
+  "browser_action": {
+    "default_title": "Fake News Detector",
+    "default_icon": "icon.png",
+    "default_popup": "popup/agree.html"
+  },
+
+  "background": {
+    "scripts": ["js/jquery-3.2.1.min.js", "js/background.js"]
+  },
+
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["js/jquery-3.2.1.min.js", "js/content-script.js"]
+  }]
+}
