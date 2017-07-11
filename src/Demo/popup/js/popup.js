@@ -24,9 +24,25 @@ function changeCheck(){
 	}
 }
 
+function getURL(){
+	fnd.storage.sync.get('OnOffSwitch', function(data){
+		var OnOffSwitch = data.OnOffSwitch;
+		if(OnOffSwitch == 'on'){
+			fnd.tabs.query({'active': true, 'lastFocusedWindow': true}, function (tabs) {
+				var url = tabs[0].url;
+				var title = tabs[0].title;
+				document.getElementById('articleTitle').innerHTML = title;
+				document.getElementById('articleURL').innerHTML = url;
+			});
+		} else {
+			
+		}
+	});
+}
 document.addEventListener('DOMContentLoaded', function(){
 	$("#OnOffSwitch").on('change.bootstrapSwitch', function(){
 		changeCheck();
 	});
+	getURL();
 	restore_options();
 });

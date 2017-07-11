@@ -7,11 +7,35 @@ body {
 	background-color:#fefefe;
 }
 
+.starDiv{
+	CLEAR: both;	
+	PADDING-RIGHT: 0px;	
+	PADDING-LEFT: 0px;	
+	BACKGROUND: url(../img/icon_star2.gif) 0px 0px;	
+	FLOAT: left;	
+	PADDING-BOTTOM: 0px;	
+	MARGIN: 0px;	
+	WIDTH: 90px;	
+	PADDING-TOP: 0px;	
+	HEIGHT: 18px;
+}
+
+.starP{
+	WIDTH: 10%; 
+	PADDING-RIGHT:0px;	
+	PADDING-LEFT:0px;	
+	BACKGROUND: url(../img/icon_star.gif) 0px 0px;	
+	PADDING-BOTTOM: 0px;	
+	MARGIN: 0px;	
+	PADDING-TOP: 0px;	
+	HEIGHT: 18px;
+}
+
 .wrapper {
         display: grid;
 		grid-gap: 5px;
         grid-template-columns: repeat(4, [col] auto ) ;
-        grid-template-rows: repeat(4, [row] auto  );
+        grid-template-rows: repeat(3, [row] auto  );
         background-color: #fff;
         color: #444;
     }
@@ -19,21 +43,26 @@ body {
         background-color: #e0e0e0;
         color: #000;
         border-radius: 5px;
-        padding: 10px;
+		padding:10px;
     }
 	.FND_title {
         grid-column: col / span 2;
-        grid-row: row ;
-		padding:5px;
+        grid-row: row 1;
+		font-weight:500;
+		padding-top:15px;
+		line-height:1.1;
+		font-size:24px;
+		text-align:center;
+		vertical-align:middle;
     }
     .OnOff {
         grid-column: col 3 / span 2 ;
-        grid-row: row ;
+        grid-row: row 1;
 		vertical-align:middle;
 		text-align:center;
     }
     .titleLabel {
-        grid-column: col ;
+        grid-column: col 1;
         grid-row: row 2 ;
 		text-align:center;
     }
@@ -41,23 +70,23 @@ body {
         grid-column: col 2 / span 3 ;
         grid-row: row 2 ;
     }
-	.urlLabel {
-        grid-column: col ;
+	.probLabel {
+        grid-column: col 1;
         grid-row: row 3 ;
 		text-align:center;
     }
-	.urlData {
-        grid-column: col 2 / span 3 ;
+	.probData {
+        grid-column: col 2 ;
         grid-row: row 3 ;
     }
 	.feedbackLabel {
-        grid-column: col ;
-        grid-row: row 4 ;
+        grid-column: col 3;
+        grid-row: row 3 ;
 		text-align:center;
     }
 	.feedbackData {
-        grid-column: col 2 / span 3 ;
-        grid-row: row 4 ;
+        grid-column: col 4;
+        grid-row: row 3 ;
     }
 
 	

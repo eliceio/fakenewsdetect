@@ -5,7 +5,7 @@
   "author": "Elice-Project",
   "description": "Elice Team Project - Fake News Detector",
   "icons": {"96": "icon.png"},
-  "permissions": ["storage", "*://*.eliceteam.nosyu.pe.kr/*"],
+  "permissions": ["storage", "*://*.eliceteam.nosyu.pe.kr/*", "tabs"],
 
   "browser_action": {
     "default_title": "Fake News Detector",
