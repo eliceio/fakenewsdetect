@@ -35,7 +35,6 @@ CREATE TABLE IF NOT EXISTS `annotators` (
 CREATE TABLE IF NOT EXISTS `articles` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `article_id` char(40) NOT NULL DEFAULT '',
-  `title` char(60) NOT NULL DEFAULT '',
   `time` char(40) NOT NULL DEFAULT '',
   `company_code` int(11) NOT NULL DEFAULT 0,
   `annotated` int(11) unsigned NOT NULL DEFAULT '0',
