@@ -138,7 +138,15 @@ if ($stmt = $mysqli->prepare("SELECT count(*) from annotations ann where ann.ann
                 </div>
                 <div class="row">
                     <div class="col-md-12">
-                        <h1 class="text-center" id="article_content">##ARTICLE_CONTENT##</h1>
+                        <hr>
+                        <h2 class="text-center"><a id="article_url" href=##ARTICLE_URL##>URL</a></h2>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-14">
+                        <ul class="lead">
+                            <h1 class="text-center" id="article_content">##ARTICLE_CONTENT##</h1>
+                        </ul>
                     </div>
                 </div>
             </div>
