@@ -1,15 +1,16 @@
 <?php
 session_start();
+error_reporting(E_ALL);
 if(isset($_SESSION["annotator_id"]))
 {
     $accountid = $_SESSION["annotator_id"];
     
     // DB
     // Hide these values for sharing
-    $mysql_url = "localhost";
-    $mysql_user = "root";
-    $mysql_password = "root";
-    $mysql_db = "fakenews";
+    $mysql_url = "";
+    $mysql_user = "";
+    $mysql_password = "";
+    $mysql_db = "";
 
     $mysqli = new mysqli($mysql_url,$mysql_user,$mysql_password,$mysql_db);
     if (mysqli_connect_errno())
@@ -36,12 +37,14 @@ if(isset($_SESSION["annotator_id"]))
     
     if($is_exist_row)
     {
-          $file = fopen("articles/".$file_name, "r");
-          $fr = fread($file, filesize("articles/".$file_name));
-          $article_title = split("\n", $fr);
-          $article_title = $article_title[0];
+          $file_name = "articles/" . $file_name . ".txt";
+          $file = fopen($file_name, "r");
+          $fr = fread($file, filesize($file_name));
+          $article_total = explode("\n", $fr);
+          $article_title = $article_total[0];
+          $article_content = join("\n", array_slice($article_total, 2, count($article_total)));
           fclose($file);
-        echo json_encode(array('id'=>$article_id, 'title'=>$article_title, 'content'=>$fr));
+        echo json_encode(array('id'=>$article_id, 'title'=>$article_title, 'content'=>$article_content));
     }
     else
     {
@@ -61,7 +64,7 @@ if(isset($_SESSION["annotator_id"]))
         // output the response
         if($is_exist_row)
         {
-          $file = fopen("articles/".$file_name, "r");
+          $file = fopen("articles/".$file_name+".txt", "r");
           $fr = fread($file, filesize("articles/".$file_name));
           $article_title = split("\n", $fr);
           $article_title = $article_title[0];

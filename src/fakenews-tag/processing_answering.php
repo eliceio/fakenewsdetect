@@ -8,10 +8,10 @@ if(isset($_SESSION["annotator_id"]) && isset($_POST["articleid"]) && isset($_POS
 
 	// DB
     // Hide these values for sharing
-	$mysql_url = "localhost";
-	$mysql_user = "root";
-	$mysql_password = "root";
-	$mysql_db = "fakenews";
+	$mysql_url = "";
+	$mysql_user = "";
+	$mysql_password = "";
+	$mysql_db = "";
 
 	$mysqli = new mysqli($mysql_url,$mysql_user,$mysql_password,$mysql_db);
 	if (mysqli_connect_errno())

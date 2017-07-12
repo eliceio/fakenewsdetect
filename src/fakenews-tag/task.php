@@ -20,10 +20,10 @@ $email_address = $_SESSION["email_address"];
 
 // Insert the email address if it is not in the table
 // Hide these values for sharing
-$mysql_url = "localhost";
-$mysql_user = "root";
-$mysql_password = "root";
-$mysql_db = "fakenews";
+$mysql_url = "";
+$mysql_user = "";
+$mysql_password = "";
+$mysql_db = "";
 
 $mysqli = new mysqli($mysql_url,$mysql_user,$mysql_password,$mysql_db);
 if (mysqli_connect_errno())
