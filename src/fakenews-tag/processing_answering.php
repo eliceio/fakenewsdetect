@@ -35,7 +35,7 @@ if(isset($_SESSION["annotator_id"]) && isset($_POST["articleid"]) && isset($_POS
 	}
 
 	# Update the result
-	if ($stmt = $mysqli->prepare("UPDATE articles tt set tt.annotated = tt.annotated + 1 where tt.id = ?")) 
+	if ($stmt = $mysqli->prepare("UPDATE articles tt set tt.annotated = tt.annotated + 1 where tt.id = ? and tt.id not in (select article_id from annotations where annotator = ?)")) 
 	{
 		$stmt->bind_param("i", $articleid);
 	    $stmt->execute();
