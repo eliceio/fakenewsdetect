@@ -43,7 +43,7 @@ if(isset($_SESSION["annotator_id"]))
           $article_total = explode("\n", $fr);
           $article_title = $article_total[0];
           $article_url = $article_total[1];
-          $article_content = join("\n", array_slice($article_total, 2, count($article_total)));
+          $article_content = join("<br>\n", array_slice($article_total, 2, count($article_total)));
           fclose($file);
         echo json_encode(array('id'=>$article_id, 'title'=>$article_title,'url'=>$article_url, 'content'=>$article_content));
     }
