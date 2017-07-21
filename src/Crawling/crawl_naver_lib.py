@@ -3,6 +3,8 @@
 
 # Libraries for crawling naver news
 import os
+import sys
+
 oid_name = {
 	'032':'경향신문',
 	'005':'국민일보',
@@ -261,6 +263,9 @@ def refine_raw_html(fn):
 	'&#' messes up the html parser.
 	This function removes '&#' from a html file.
 
+	Also, '<' or '>' inside of tag parameters mess up the html parser.
+	This function replaces it as '&lt;' or '&gt;'.
+
 	@fn: the html file name
 	'''
 	f = open(fn)
@@ -269,31 +274,67 @@ def refine_raw_html(fn):
 	for line in f:
 		if '\0' in line:
 			line = line.replace('\0', '')
-		if not '&#' in line:
-			refined += line
-			continue
-		mode = 0
-		last_idx = -1
+		if '&#' in line:
+			mode = 0
+			last_idx = -1
+			i = 0
+			while i < len(line):
+				if mode == 0:
+					if line[i] == '&':
+						mode = 1
+						last_idx = i
+				elif mode == 1:
+					if line[i] == '#':
+						mode = 2
+					else:
+						mode = 0
+				elif mode == 2:
+					if line[i] in ['0','1','2','3','4','5','6','7','8','9']:
+						mode = 0
+					else:
+						# detected
+						line = line[:last_idx] + line[last_idx + 2:]
+						i = last_idx - 1
+						detected = True
+				i = i + 1
+
+		# replace < or > inside of tag parameters
+		opened = False
 		i = 0
-		while i < len(line):
-			if mode == 0:
-				if line[i] == '&':
-					mode = 1
-					last_idx = i
-			elif mode == 1:
-				if line[i] == '#':
-					mode = 2
-				else:
-					mode = 0
-			elif mode == 2:
-				if line[i] in ['0','1','2','3','4','5','6','7','8','9']:
-					mode = 0
-				else:
-					# detected
-					line = line[:last_idx] + line[last_idx + 2:]
-					i = last_idx - 1
-					detected = True
-			i = i + 1
+		length = len(line)
+		while i < length:
+			if line[i] == '"':
+				if i > 0 and line[i - 1] == '=':
+					if not opened:
+						opened = True
+					#else:
+					#	print ("ERROR: filename: %s Already opened at %d\n       line: %s" % (fn, i, line), file=sys.stderr)
+				elif i < length - 1 and (line[i + 1] == ' ' or line[i + 1] == '>'):
+					if opened:
+						opened = False
+					#else:
+					#	print ("ERROR: filename: %s Not yet opened at %d\n       line: %s" % (fn, i, line), file=sys.stderr)
+
+				i += 1
+				continue
+
+			if not opened:
+				i += 1
+				continue
+
+			if line[i] == '<':
+				line = line[:i] + '&lt;' + line[i + 1:]
+				i = i + 4
+				length = len(line)
+				detected = True
+			elif line[i] == '>':
+				line = line[:i] + '&gt;' + line[i + 1:]
+				i = i + 4
+				length = len(line)
+				detected = True
+			else:
+				i += 1
+
 		refined += line
 	f.close()
 	if not detected:
@@ -325,3 +366,27 @@ def get_text_name_article(date, oid, mid, sid1, sid2, aid):
 	if not os.path.exists('article'):
 		os.mkdir('article')
 	return 'article/%s.%s.%s.%s.%s.%s.txt' % (date, oid, mid, sid1, sid2, aid)
+
+def get_raw_html_name_entlist(date, sid, page):
+	'''
+	Return the raw html file name of list pages
+	'''
+	if not os.path.exists('raw_html'):
+		os.mkdir('raw_html')
+	return 'raw_html/entlist.%s.%s.%d.html' % (date, sid, page)
+
+def get_raw_html_name_entarticle(date, oid, sid, aid):
+	'''
+	Return the raw html file name of article pages
+	'''
+	if not os.path.exists('raw_html'):
+		os.mkdir('raw_html')
+	return 'raw_html/entarticle.%s.%s.%s.%s.html' % (date, oid, sid, aid)
+
+def get_text_name_entarticle(date, oid, sid, aid):
+	'''
+	Return the raw html file name of article pages
+	'''
+	if not os.path.exists('entarticle'):
+		os.mkdir('entarticle')
+	return 'entarticle/%s.%s.%s.%s.txt' % (date, oid, sid, aid)
