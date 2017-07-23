@@ -25,7 +25,7 @@ def crawl_article(date, oid, sid, aid, title, url):
 		status = -1
 		while status != 200:
 			if status >= 0:
-				print ("ERROR occurred! status: %d at %s" % (status, time.strftime("%Y-%m-%d %H:%M:%S"))
+				print ("ERROR occurred! status: %d at %s" % (status, time.strftime("%Y-%m-%d %H:%M:%S")))
 				time.sleep(20)
 			# ref: http://dgkim5360.tistory.com/entry/python-requests
 			params = {'oid':oid,
