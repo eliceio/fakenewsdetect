@@ -1,0 +1,81 @@
+{% load staticfiles %}
+<html>
+<head>
+        <meta charset='utf-8'>
+        <link href="{% static 'css/index.css'%}" rel='stylesheet' type='text/css'/>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+
+        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+        <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>       
+
+        <script type="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.2/js/bootstrap.min.js"></script>
+        
+
+        <script src="{% static 'js/jquery.cookie.js'%}"></script>
+        <title>FND Demo page ver1</title>
+        <script>
+        var csrftoken = jQuery.cookie('csrftoken');
+		function csrfSafeMethod(method) {
+   			 // these HTTP methods do not require CSRF protection
+		    return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+		}
+
+		jQuery.ajaxSetup({
+		    beforeSend: function(xhr, settings) {
+		    	if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+        	    	xhr.setRequestHeader("X-CSRFToken", csrftoken);
+	        	}
+		    }
+		});
+        function feedback(s){
+            var data_dict = {
+                "idx" : "{{idx}}",
+                "title" : "{{title}}",
+                "body_id" : "{{body_id}}",
+                "stance" : "{{stance}}",
+                "feedback" : s
+            };
+            jQuery.ajax({
+                url:"{% url 'feedback' %}",
+                type:'POST',
+                data:data_dict,
+            });
+			location.reload();
+        }
+        
+        function setBody(){
+            s = "{{body}}";
+            s = s.replace(/\|/g,"<br>");
+            //alert(s);
+            document.getElementById("articleBody").innerHTML=s;
+        }
+
+            if (document.readyStat == "complete"){
+                setBody();
+            } else{
+                window.onload = function(){
+                    setBody();
+                }
+            }
+        </script>
+</head>
+
+<body>
+{{idx}}
+<div id='board' class='board'>
+<hr color="black" size="20px"/>
+<div id='articleTitle' class='space articleTitle'>Title : {{ title }} </div>
+<hr color="black" size="20px" />
+<div id='articleBody' class='space articleBody'></div>
+<div id='articleLabel' class='space articleLabel'><b>Our Predict Result! :</b> {{ stance }} </div>
+<div id='userFeedback' class='space userFeedback'>
+    <b>Please give me your feedback!</b><br>
+    <input class="btn btn-primary"  type="button" value="Agree" id="agreeBtn" onclick="feedback('agree');">
+    <input class="btn btn-success" type="button" value="Disagree" id="disagreeBtn" onclick="feedback('disagree');">
+    <input class="btn btn-info" type="button" value="Discuss" id="discussBtn" onclick="feedback('discuss');">
+    <input class="btn btn-warning" type="button" value="Unrelated" id="unrelatedBtn" onclick="feedback('unrelated');">
+</div>
+</div>
+</body>
+</html>

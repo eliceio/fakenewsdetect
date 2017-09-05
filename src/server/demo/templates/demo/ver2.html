@@ -1,0 +1,247 @@
+{% load staticfiles %}
+<html>
+<head>
+    <meta charset='utf-8'>
+    <title>FND Demo Page Ver2</title>
+    <link href="{% static 'css/ver2.css'%}" rel='stylesheet' type='text/css'/>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap-theme.min.css">
+    <script type="text/javascript" src="{% static 'js/ver2.js'%}" ></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/prototype/1.7.1.0/prototype.js"></script>       
+
+    <script type="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.2/js/bootstrap.min.js"></script>
+    
+    <script>
+		function loadHeadCandidate(){
+			xmlhttphead = window.XMLHttpRequest ? new XMLHttpRequest() : window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : alert("XMLHTTP를 지원하지 않는 브라우저입니다");
+			xmlhttphead.onreadystatechange = function() { if (xmlhttphead.readyState==4 && xmlhttphead.status==200) {
+				var data = xmlhttphead.responseText.split("\n");
+				headData = '';
+				for(var i=0; i<data.length-1; i++){
+					headData += "<li onclick='changeHead(this)'>";
+					headData += data[i]
+					headData += "</li><br>";
+				}
+				headlist = document.getElementById("headlist");
+				headlist.innerHTML = headData;
+			}}
+			xmlhttphead.open("GET","{% static 'candidate_head.txt'%}",true);
+			xmlhttphead.send();
+		}
+
+        function loadBodyCandidate(){
+            xmlhttpbody = window.XMLHttpRequest ? new XMLHttpRequest() : window.ActiveXObject ? new ActiveXObject("Microsoft.XMLHTTP") : alert("XMLHTTP를 지원하지 않는 브라우저입니다");
+            xmlhttpbody.onreadystatechange = function() { if (xmlhttpbody.readyState==4 && xmlhttpbody.status==200) {
+                var data = xmlhttpbody.responseText.split("\n");
+                bodyData = '';
+                for(var i=0; i< data.length-1; i++){
+                    body_id = data[i].split("!#@!#@")[0]
+                    real_body = data[i].split("!#@!#@")[1]
+                    bodyData += "<li onclick='changeBody(this)' id='" + ('body'+body_id) + "'>";
+                    bodyData += real_body.split(".")[0].split("|")[0] + "... ...";
+                    bodyData += "</li><br>";
+                }
+                bodylist = document.getElementById("bodylist");
+                bodylist.innerHTML = bodyData;
+            }}
+           xmlhttpbody.open("GET","{% static 'candidate_body.txt'%}",true);
+           xmlhttpbody.send();
+        }
+        
+        function labelinit(){
+            document.getElementById("articleLabel").innerHTML = "";
+        }
+
+        function changeHead(e){
+            labelinit();    
+            var articleTitle = document.getElementById("articleTitle");
+            articleTitle.innerHTML = e.innerHTML;
+        }
+		
+        function changeBody(e){
+            labelinit();
+            s = 'None'
+            body_id = e.id.replace("body","")
+			xmlhttpbody.onreadystatechange = function() { if (xmlhttpbody.readyState == 4 && xmlhttpbody.status == 200){
+				var data = xmlhttpbody.responseText.split("\n");
+				var articleBody = document.getElementById("articleBody");
+                for(var i=0; i<data.length; i++){
+                    if(data[i].search(body_id+"!#@!#@")>=0){
+                        s = data[i].split("!#@!#@")[1].replace(/\|/g,"");
+                    }
+                }
+				articleBody.innerHTML = s
+                document.getElementById("idStore").innerHTML = body_id;
+			}
+            }
+			xmlhttpbody.open("GET","{% static 'candidate_body.txt'%}", true);
+			xmlhttpbody.send();
+        }
+		
+        function resetCandidate(){
+            jQuery.ajax({
+                url : "{% url 'resetCandidate'%}"
+            });
+            location.reload(true);
+        }
+
+    if (document.readyState === "complete"){
+        loadHeadCandidate();
+        loadBodyCandidate();
+    }
+    else {
+        window.onload = function(){
+            loadHeadCandidate();
+            loadBodyCandidate();
+        };
+    };
+    // csrftoken for POST communication
+    var csrftoken = jQuery.cookie('csrftoken');
+    function csrfSafeMethod(method){
+        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+    }
+	
+    jQuery.ajaxSetup({
+        beforeSend: function(xhr, settings){
+            if(!csrfSafeMethod(settings.type) && !this.crossDomain){
+                xhr.setRequestHeader("X-CSRFToken", csrftoken);
+            }
+        }
+    });
+    
+    function sendData(){
+        var head = document.getElementById("articleTitle").innerHTML;
+        var body_id = document.getElementById("idStore").innerHTML;
+        if(head == '' || body_id == ''){alert("제목과 내용을 확인해주세요");}
+        else{
+            document.getElementById("articleLabel").innerHTML = "분석 중 ......."
+            var data_dict = {
+                'title':head,
+                'body_id':body_id,
+            };
+            jQuery.ajax({
+                url:"{% url 'receiveData'%}",
+                type:'POST',
+                data:data_dict,
+                complete : function(jqXHR, textStatus){
+                    result_json_data = JSON.parse(jqXHR.responseText)
+                    document.getElementById("articleLabel").innerHTML = result_json_data.result 
+                    document.getElementById("idxStore").innerHTML = result_json_data.idx
+                }
+            });
+        }
+    }
+	
+    function feedback(s){
+        stance = document.getElementById("articleLabel").innerHTML;
+        if(stance == ""){alert("Send Data를 눌러 결과값을 먼저 확인해주세요.");}
+        else {
+            high_mode = document.getElementById("high_mode_btn").innerHTML
+            //alert(s)
+            var data_dict = {
+                "title":document.getElementById("articleTitle").innerHTML,
+                "body_id":document.getElementById("idStore").innerHTML,
+                "feedback":s,
+                "idx":document.getElementById("idxStore").innerHTML,
+                "high_mode":high_mode
+            }
+            jQuery.ajax({
+                url:"{% url 'feedback_ver2' %}",
+                type:'POST',
+                data:data_dict,
+                complete : function(jqXHR, testStatus){
+                    //alert(jqXHR.responseText);
+                    alert("감사합니다!");
+                    location.reload(true);
+                }
+            });
+        }
+    }
+
+    function high_mode_toggle(){
+        hmbtn = document.getElementById("high_mode_btn");
+        if(hmbtn.innerHTML == "Normal-Mode"){
+            hmbtn.innerHTML = "High-Mode";
+        } else {
+            hmbtn.innerHTML = "Normal-Mode";
+        }
+    }
+    </script>
+</head>
+
+<body>
+<div id="wrap">
+<div id="wrap2">
+<table id = "stage">
+<tr>
+
+    <td class="article">
+    
+    
+        <div class="menu-up"><p>Fake News Detector</p></div>
+   
+    <div id="description">
+        제목과 본문을 선택해 보세요
+        </div>
+
+
+        <div class="candidate head">
+            <div class="candidateDiv">
+                <p>Title</p>
+                <ul id="headlist">
+                </ul>
+                </div>
+            </div>
+        <div class="candidate body">
+            <div class="candidateDiv">
+            <p>Body</p>
+                <ul id="bodylist">
+                </ul>
+            </div>
+        </div>
+        <!-- 가운데 정렬-->
+        <div class="wrap">
+        <div id="articleTitle-box">
+        <div id='articleTitle' class='articleTitle'>Please select a title.{{ title }}</div>
+        </div>
+        </div>
+
+
+        <div class="wrap">
+        <div id="articleTitle-box">
+        <div id='articleBody' class='articleBody'>Please select body.{{body_id}}{{ body }}</div>
+        </div>
+        </div>        
+        <div class="wrap">
+	    <div id="ver2Btns">
+            <button id="sendDataBtn" class="btn btn-default btndesc" onclick="sendData()">Send Data!
+                <span class="btndesctext"> 서버로 데이터를 전송합니다 </span>
+            </button>
+            <button id="resetBtn" class="btn btndesc" onclick="remove_all()">Reset Data
+                <span class="btndesctext"> 선택한 제목과 내용 데이터를 초기화합니다 </span>
+            </button>
+            <button id="resetCandidateBtn" class = "btn btn-danger btndesc" onclick="resetCandidate()">Reset Candidate
+                
+            </button>
+        </div>	
+
+		<div id='articleLabel' class='articleLabel'></div>
+        <b>Please give me your feedback!</b>
+        <div id='userFeedback' class='userFeedback'>
+            <input class="btn btn-primary"  type="button" value="Agree" id="agreeBtn" onclick="feedback('agree');">
+            <input class="btn btn-success" type="button" value="Disagree" id="disagreeBtn" onclick="feedback('disagree');">
+            <input class="btn btn-info" type="button" value="Discuss" id="discussBtn" onclick="feedback('discuss');">
+            <input class="btn btn-warning" type="button" value="Unrelated" id="unrelatedBtn" onclick="feedback('unrelated');">
+        </div>
+        </div>
+    </td>
+</tr>
+</table>
+</div>
+</div>
+<button id="high_mode_btn" class="btn btn-default" onclick="high_mode_toggle();">Normal-Mode</button>
+<div id="idStore"></div>
+<div id="idxStore"></div>
+</body>
+</html>

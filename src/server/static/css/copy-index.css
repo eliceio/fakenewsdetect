@@ -1,0 +1,38 @@
+.board {
+display:grid;
+grid-gap:5px;
+grid-template-columns:repeat(4,[col] auto);
+grid-template-rows:repeat(4,[row]auto);
+background-color:#fff;
+color:#444;
+width:100%;
+text-align:center;
+}
+.space {
+background-color:#e0e0e0;
+color:#000;
+border-radius:5px;
+padding:10px;
+}
+.articleTitle {
+grid-column:col;
+grid-row:row 1;
+text-align:center;
+font-size:larger;
+}
+.articleBody {
+grid-column:col;
+grid-row:row 2;
+text-align:center;
+}
+.articleLabel {
+grid-column:col;
+grid-row:row 3;
+text-align:center;
+}
+.userFeedback {
+grid-column:col;
+grid-row:row 4;
+text-align:center;
+}
+
